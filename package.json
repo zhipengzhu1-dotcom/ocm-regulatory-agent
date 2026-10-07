@@ -1,0 +1,21 @@
+{
+  "name": "ocm-regulatory-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:corpus": "tsx src/corpus/cli.ts",
+    "integrity": "tsx src/corpus/integrity-cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "dev": "tsx src/server/main.ts",
+    "eval": "tsx src/eval/run.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.235",
+    "@types/node": "^26.2.0",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  }
+}

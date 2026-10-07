@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCM Regulatory Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#FBFCFD;--raised:#FFFFFF;--sunken:#F2F5F8;
+  --ink:#141922;--ink-2:#43505F;--ink-3:#71808F;
+  --rule:#DFE5EB;--rule-2:#C9D2DB;
+  --accent:#1F3A5F;--ok:#1B7A4B;--ok-soft:#E7F4ED;
+  --infer:#8A5A0B;--infer-soft:#FBF1E0;
+  --stop:#9E2B2B;--stop-soft:#FAEBEB;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --serif:"Spectral",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0F131A;--raised:#161C25;--sunken:#1B222C;
+  --ink:#E6EBF1;--ink-2:#A5B2C0;--ink-3:#7A8794;
+  --rule:#28313D;--rule-2:#38434F;
+  --accent:#9EC1E8;--ok:#5FC08C;--ok-soft:#12261C;
+  --infer:#D9A44E;--infer-soft:#2A2113;--stop:#E08585;--stop-soft:#2C1717;
+}}
+:root[data-theme="dark"]{
+  --ground:#0F131A;--raised:#161C25;--sunken:#1B222C;
+  --ink:#E6EBF1;--ink-2:#A5B2C0;--ink-3:#7A8794;
+  --rule:#28313D;--rule-2:#38434F;
+  --accent:#9EC1E8;--ok:#5FC08C;--ok-soft:#12261C;
+  --infer:#D9A44E;--infer-soft:#2A2113;--stop:#E08585;--stop-soft:#2C1717;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6}
+.wrap{max-width:52rem;margin:0 auto;padding:2.5rem 1.5rem 5rem;display:flex;flex-direction:column;gap:1.75rem}
+header{border-bottom:1px solid var(--rule);padding-bottom:1.25rem}
+.eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-family:var(--serif);font-weight:500;font-size:1.7rem;margin:.35rem 0 0;text-wrap:balance}
+.warn{background:var(--stop-soft);border:1px solid var(--rule);border-radius:3px;padding:.7rem .9rem;font-size:.85rem;color:var(--ink-2)}
+.warn b{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stop);display:block;margin-bottom:.2rem}
+form{display:flex;gap:.6rem}
+textarea{flex:1;font-family:var(--sans);font-size:1rem;color:var(--ink);background:var(--raised);
+  border:1px solid var(--rule-2);border-radius:3px;padding:.75rem .9rem;resize:vertical;min-height:3.4rem;line-height:1.5}
+button{font-family:var(--sans);font-weight:500;font-size:.9rem;background:var(--accent);color:var(--ground);
+  border:none;border-radius:3px;padding:0 1.1rem;cursor:pointer;height:3.4rem}
+button:disabled{opacity:.5;cursor:default}
+.q{background:var(--sunken);border:1px solid var(--rule);border-bottom:none;border-radius:3px 3px 0 0;padding:.9rem 1.1rem}
+.q b{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:.3rem}
+.ans{border:1px solid var(--rule);border-radius:0 0 3px 3px;background:var(--raised)}
+.reg{padding:1.2rem 1.1rem;border-bottom:1px solid var(--rule)}
+.reg:last-child{border-bottom:none}
+.reg-h{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem}
+.dot{width:.5rem;height:.5rem;border-radius:50%;flex:none}
+.cited .reg-h{color:var(--ok)}.cited .dot{background:var(--ok)}
+.infer{background:var(--infer-soft)}.infer .reg-h{color:var(--infer)}.infer .dot{background:var(--infer)}
+.cite{display:grid;grid-template-columns:auto 1fr;gap:.5rem .8rem;padding:.7rem 0;border-top:1px dashed var(--rule)}
+.cite:first-of-type{border-top:none;padding-top:0}
+.tick{font-family:var(--mono);font-size:.7rem;color:var(--ok);background:var(--ok-soft);border:1px solid var(--ok);
+  border-radius:2px;padding:.08rem .35rem;height:fit-content;white-space:nowrap}
+.anchor{font-family:var(--mono);font-size:.76rem;color:var(--accent);font-weight:500;display:inline-block;margin-bottom:.25rem;text-decoration:none;border-bottom:1px solid transparent}
+.anchor:hover{border-bottom-color:var(--accent)}
+.src{font-family:var(--sans);font-size:.72rem;color:var(--ink-3);display:block;margin-bottom:.3rem}
+blockquote{margin:0;font-family:var(--serif);font-size:1rem;line-height:1.55;border-left:2px solid var(--rule-2);padding-left:.8rem}
+.infer p{margin:0 0 .6rem;font-size:.95rem}.infer p:last-child{margin-bottom:0}
+.infer ul,.infer ol{margin:0 0 .6rem;padding-left:1.3rem;font-size:.95rem}
+.infer li{margin-bottom:.2rem}
+.infer code{font-family:var(--mono);font-size:.85em;background:var(--raised);border:1px solid var(--rule);border-radius:2px;padding:.05rem .25rem}
+.tw{overflow-x:auto;margin:0 0 .7rem}
+.infer table{border-collapse:collapse;font-size:.87rem;min-width:100%}
+.infer th,.infer td{border:1px solid var(--rule-2);padding:.35rem .6rem;text-align:left;vertical-align:top}
+.infer th{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--infer);font-weight:500;white-space:nowrap}
+.infer td{font-variant-numeric:tabular-nums}
+.banner{background:var(--stop-soft);border-bottom:1px solid var(--rule);padding:1rem 1.1rem}
+.banner b{display:block;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stop);margin-bottom:.2rem}
+.blocked{padding:1.2rem 1.1rem;background:var(--stop-soft)}
+.blocked .reg-h{color:var(--stop)}.blocked .dot{background:var(--stop)}
+.fail{background:var(--raised);border:1px solid var(--rule);border-radius:3px;padding:.7rem .8rem;margin-top:.7rem;overflow-x:auto}
+.fail .lbl{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:.3rem}
+.fail code{font-family:var(--mono);font-size:.78rem;white-space:pre-wrap;display:block}
+.meta{font-family:var(--mono);font-size:.7rem;color:var(--ink-3);padding:.6rem 1.1rem;border-top:1px solid var(--rule);
+  display:flex;gap:1.1rem;flex-wrap:wrap;font-variant-numeric:tabular-nums;align-items:center}
+.meta button{background:none;color:var(--accent);border:1px solid var(--rule-2);height:auto;padding:.15rem .5rem;
+  font-family:var(--mono);font-size:.7rem;border-radius:2px;margin-left:auto}
+.status{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);padding:1.1rem}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">NYS Office of Cannabis Management</div>
+    <h1>Regulatory Assistant</h1>
+  </header>
+  <div id="integrity"></div>
+  <form id="form">
+    <textarea id="q" placeholder="Our LC-MS/MS reference standard lot expired mid-run. Do we have to re-run the batch?" required></textarea>
+    <button id="go" type="submit">Ask</button>
+  </form>
+  <div id="out"></div>
+</div>
+<script type="module">
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+let current = null;
+
+/**
+ * A small Markdown subset for the inference register: tables, lists, bold, code.
+ * Everything is HTML-escaped BEFORE any formatting is applied, so model output can
+ * never introduce markup.
+ */
+function markdown(src) {
+  const lines = esc(src).split("\n");
+  const out = [];
+  let i = 0;
+
+  const isRow = (l) => /^\s*\|.*\|\s*$/.test(l);
+  const cells = (l) => l.trim().replace(/^\||\|$/g, "").split("|").map((c) => c.trim());
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    if (isRow(line) && isRow(lines[i + 1] ?? "") && /^[\s|:-]+$/.test(lines[i + 1])) {
+      const head = cells(line);
+      i += 2;
+      const body = [];
+      while (i < lines.length && isRow(lines[i])) body.push(cells(lines[i++]));
+      out.push(
+        `<div class="tw"><table><thead><tr>${head.map((c) => `<th>${inline(c)}</th>`).join("")}</tr></thead>` +
+          `<tbody>${body.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`,
+      );
+      continue;
+    }
+
+    if (/^\s*(?:[-*•]|\d+[.)])\s+/.test(line)) {
+      const ordered = /^\s*\d+[.)]\s+/.test(line);
+      const items = [];
+      while (i < lines.length && /^\s*(?:[-*•]|\d+[.)])\s+/.test(lines[i])) {
+        items.push(`<li>${inline(lines[i++].replace(/^\s*(?:[-*•]|\d+[.)])\s+/, ""))}</li>`);
+      }
+      out.push(`<${ordered ? "ol" : "ul"}>${items.join("")}</${ordered ? "ol" : "ul"}>`);
+      continue;
+    }
+
+    if (line.trim() === "") { i++; continue; }
+
+    const para = [];
+    while (i < lines.length && lines[i].trim() !== "" && !isRow(lines[i]) && !/^\s*(?:[-*•]|\d+[.)])\s+/.test(lines[i])) {
+      para.push(lines[i++]);
+    }
+    out.push(`<p>${inline(para.join(" "))}</p>`);
+  }
+  return out.join("");
+}
+
+function inline(text) {
+  return text
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+}
+
+fetch("/integrity").then((r) => r.json()).then((rep) => {
+  if (rep.ok) return;
+  $("#integrity").innerHTML = `<div class="warn"><b>Corpus integrity — ${rep.dangling.length} dangling citation</b>` +
+    rep.dangling.map((d) => `${esc(d.reference)} is cited in ${esc(d.documentId)} (line ${d.line}) but does not exist in the corpus.`).join(" ") +
+    ` Answers touching this area may be incomplete.</div>`;
+}).catch(() => { /* the banner is advisory; its absence must not break the page */ });
+
+$("#form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const question = $("#q").value.trim();
+  if (!question) return;
+  $("#go").disabled = true;
+
+  $("#out").innerHTML =
+    `<div class="q"><b>Question</b>${esc(question)}</div>` +
+    `<div class="ans"><div class="status" id="status">drafting…</div></div>`;
+
+  try {
+    const res = await fetch("/ask", { method: "POST", body: question });
+    if (!res.ok || !res.body) {
+      const detail = await res.json().catch(() => ({}));
+      throw new Error(detail.error ?? `server responded ${res.status}`);
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let sawResult = false;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const chunks = buffer.split("\n\n");
+      buffer = chunks.pop() ?? "";
+      for (const chunk of chunks) {
+        const event = /^event: (.+)$/m.exec(chunk)?.[1];
+        const raw = /^data: (.+)$/m.exec(chunk)?.[1];
+        if (!event || !raw) continue;
+        let data;
+        try { data = JSON.parse(raw); } catch { continue; }
+        if (event === "result") sawResult = true;
+        handle(event, data);
+      }
+    }
+    // A stream that ends without a result means the connection dropped mid-answer.
+    if (!sawResult) render({ outcome: "error", message: "The connection closed before an answer arrived." });
+  } catch (error) {
+    render({ outcome: "error", message: error instanceof Error ? error.message : String(error) });
+  } finally {
+    $("#go").disabled = false;
+  }
+});
+
+function handle(event, data) {
+  const status = $("#status");
+  if (event === "attempt" && status) {
+    status.textContent = data.attempt === 1 ? "drafting…" : `verification failed — retrying (attempt ${data.attempt})…`;
+  }
+  if (event === "anchors" && status && !status.dataset.streaming) {
+    // The citation phase is the long one; show it working.
+    status.innerHTML = `<span style="color:var(--ink-3)">reading the corpus…</span><br>` +
+      data.anchors.map((a) => `<span class="anchor" style="cursor:default">${esc(a)}</span>`).join("<br>");
+  }
+  if (event === "draft" && status) {
+    status.dataset.streaming = "1";
+    // Streams before the gate has run. May be retracted entirely.
+    status.innerHTML = `<span style="color:var(--ink)">${esc(data.text)}</span><span style="color:var(--ink-3)">▌</span>`;
+  }
+  if (event === "retract" && status) {
+    // Replaced outright, never annotated: nothing incorrect is left readable.
+    delete status.dataset.streaming;
+    status.textContent = "verification failed — retrying…";
+  }
+  if (event === "result") render(data);
+}
+
+function render(r) {
+  current = r;
+  if (r.outcome === "usage-limit")
+    return void ($("#out").querySelector(".ans").innerHTML =
+      `<div class="blocked"><div class="reg-h"><span class="dot"></span>Subscription usage limit reached</div>
+       <p style="margin:0;font-size:.95rem">Your Claude plan's usage limit has been reached. Try again after the window resets.</p></div>`);
+
+  if (r.outcome === "error")
+    return void ($("#out").querySelector(".ans").innerHTML =
+      `<div class="blocked"><div class="reg-h"><span class="dot"></span>Could not complete</div>
+       <p style="margin:0;font-size:.95rem">${esc(r.message)}</p></div>`);
+
+  if (r.outcome === "withheld")
+    return void ($("#out").querySelector(".ans").innerHTML =
+      `<div class="blocked"><div class="reg-h"><span class="dot"></span>Answer withheld — citation could not be verified</div>
+        <p style="margin:0;font-size:.95rem">${r.failures.length} quotation(s) were not found in the corpus after ${r.attempts} attempts. The answer was not shown.</p>
+        ${r.failures.map((f) => `<div class="fail"><span class="lbl">Unverified — ${esc(f.reason)}</span><code>${esc(f.citation.quote)}</code></div>
+          <div class="fail"><span class="lbl">Claimed anchor</span><code>${esc(f.citation.anchor)} — ${esc(f.citation.documentId)}</code></div>`).join("")}
+       </div><div class="meta"><span>${r.attempts} / ${r.attempts} attempts</span><span>answer suppressed</span></div>`);
+
+  const silence = r.silence
+    ? `<div class="banner"><b>OCM does not address this</b><span>${esc(r.silence)}</span></div>` : "";
+  const cited = r.cited.length
+    ? `<div class="reg cited"><div class="reg-h"><span class="dot"></span>${r.silence ? "Nearest requirements — adjacent, not governing" : "What the regulations say"}</div>
+        ${r.cited.map((c) => `<div class="cite"><span class="tick">✓ verified</span><div>
+          <a class="anchor" href="/pdf/${encodeURIComponent(c.documentId)}#page=${c.page}" target="_blank" rel="noopener">${esc(c.anchor)} — page ${c.page}</a>
+          <span class="src">${esc(c.title ?? c.documentId)}</span>
+          <blockquote>${esc(c.quote)}</blockquote></div></div>`).join("")}
+       </div>` : "";
+  const reading = r.reading
+    ? `<div class="reg infer"><div class="reg-h"><span class="dot"></span>My reading — inference, not cited</div>
+        ${markdown(r.reading)}</div>` : "";
+
+  $("#out").querySelector(".ans").innerHTML = silence + cited + reading +
+    `<div class="meta"><span>${r.cited.length} citation(s) · all verified</span>
+      <span>gate passed on attempt ${r.attempts}</span>
+      <button type="button" id="export">export</button></div>`;
+
+  $("#export")?.addEventListener("click", exportAnswer);
+}
+
+function exportAnswer() {
+  const r = current;
+  const lines = [`# ${$("#q").value.trim()}`, ""];
+  if (r.silence) lines.push(`> OCM DOES NOT ADDRESS THIS: ${r.silence}`, "");
+  if (r.cited.length) {
+    lines.push("## What the regulations say", "");
+    for (const c of r.cited) lines.push(`**${c.anchor}** — ${c.title ?? c.documentId}, page ${c.page}`, `> ${c.quote}`, "");
+  }
+  if (r.reading) lines.push("## My reading (inference, not cited)", "", r.reading, "");
+  navigator.clipboard.writeText(lines.join("\n"));
+  $("#export").textContent = "copied";
+  setTimeout(() => { const b = $("#export"); if (b) b.textContent = "export"; }, 1500);
+}
+</script>
+</body>
+</html>

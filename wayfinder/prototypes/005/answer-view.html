@@ -1,0 +1,189 @@
+<title>OCM Answer View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+:root{
+  --ground:#FBFCFD; --raised:#FFFFFF; --sunken:#F2F5F8;
+  --ink:#141922; --ink-2:#43505F; --ink-3:#71808F;
+  --rule:#DFE5EB; --rule-2:#C9D2DB;
+  --accent:#1F3A5F; --accent-soft:#E8EEF5;
+  --ok:#1B7A4B; --ok-soft:#E7F4ED;
+  --infer:#8A5A0B; --infer-soft:#FBF1E0;
+  --stop:#9E2B2B; --stop-soft:#FAEBEB;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --serif:"Spectral",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0F131A; --raised:#161C25; --sunken:#1B222C;
+  --ink:#E6EBF1; --ink-2:#A5B2C0; --ink-3:#7A8794;
+  --rule:#28313D; --rule-2:#38434F;
+  --accent:#9EC1E8; --accent-soft:#1A2634;
+  --ok:#5FC08C; --ok-soft:#12261C;
+  --infer:#D9A44E; --infer-soft:#2A2113;
+  --stop:#E08585; --stop-soft:#2C1717;
+}}
+:root[data-theme="dark"]{
+  --ground:#0F131A; --raised:#161C25; --sunken:#1B222C;
+  --ink:#E6EBF1; --ink-2:#A5B2C0; --ink-3:#7A8794;
+  --rule:#28313D; --rule-2:#38434F;
+  --accent:#9EC1E8; --accent-soft:#1A2634;
+  --ok:#5FC08C; --ok-soft:#12261C;
+  --infer:#D9A44E; --infer-soft:#2A2113;
+  --stop:#E08585; --stop-soft:#2C1717;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:52rem;margin:0 auto;padding:3rem 1.5rem 6rem;display:flex;flex-direction:column;gap:3rem}
+header{display:flex;flex-direction:column;gap:.5rem;border-bottom:1px solid var(--rule);padding-bottom:1.75rem}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-family:var(--serif);font-weight:500;font-size:1.9rem;line-height:1.25;margin:0;text-wrap:balance}
+.sub{color:var(--ink-2);font-size:.95rem;max-width:44rem}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.75rem}
+.leg{border:1px solid var(--rule);border-radius:3px;padding:.7rem .85rem;background:var(--raised)}
+.leg b{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem}
+.leg span{font-size:.8rem;color:var(--ink-2);line-height:1.45}
+.state{display:flex;flex-direction:column;gap:0}
+.state-tag{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:.6rem}
+.q{background:var(--sunken);border:1px solid var(--rule);border-bottom:none;border-radius:3px 3px 0 0;
+  padding:1rem 1.25rem;font-size:1rem;color:var(--ink)}
+.q b{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);display:block;margin-bottom:.35rem}
+.ans{border:1px solid var(--rule);border-radius:0 0 3px 3px;background:var(--raised);
+  display:flex;flex-direction:column}
+.reg{padding:1.35rem 1.25rem;border-bottom:1px solid var(--rule)}
+.reg:last-child{border-bottom:none}
+.reg-h{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  display:flex;align-items:center;gap:.5rem;margin-bottom:.9rem}
+.reg-h .dot{width:.5rem;height:.5rem;border-radius:50%;flex:none}
+.cited .reg-h{color:var(--ok)} .cited .dot{background:var(--ok)}
+.infer{background:var(--infer-soft)}
+.infer .reg-h{color:var(--infer)} .infer .dot{background:var(--infer)}
+.cite{display:grid;grid-template-columns:auto 1fr;gap:.6rem .85rem;padding:.75rem 0;
+  border-top:1px dashed var(--rule)}
+.cite:first-of-type{border-top:none;padding-top:0}
+.tick{font-family:var(--mono);font-size:.72rem;color:var(--ok);background:var(--ok-soft);
+  border:1px solid var(--ok);border-radius:2px;padding:.1rem .35rem;height:fit-content;white-space:nowrap}
+.anchor{font-family:var(--mono);font-size:.78rem;color:var(--accent);font-weight:500;
+  display:block;margin-bottom:.3rem}
+blockquote{margin:0;font-family:var(--serif);font-size:1.02rem;line-height:1.55;color:var(--ink);
+  border-left:2px solid var(--rule-2);padding-left:.85rem}
+.infer p{margin:0 0 .7rem;font-size:.95rem;color:var(--ink)}
+.infer p:last-child{margin-bottom:0}
+.banner{background:var(--stop-soft);border-bottom:1px solid var(--rule);padding:1.1rem 1.25rem;
+  display:flex;gap:.7rem;align-items:flex-start}
+.banner .mark{font-family:var(--mono);color:var(--stop);font-weight:500;font-size:.9rem;flex:none}
+.banner div b{display:block;font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--stop);margin-bottom:.25rem}
+.banner div span{font-size:.9rem;color:var(--ink-2)}
+.blocked{padding:1.35rem 1.25rem;background:var(--stop-soft)}
+.blocked .reg-h{color:var(--stop)} .blocked .dot{background:var(--stop)}
+.fail{background:var(--raised);border:1px solid var(--rule);border-radius:3px;padding:.8rem .9rem;
+  margin-top:.85rem;overflow-x:auto}
+.fail .lbl{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);display:block;margin-bottom:.4rem}
+.fail code{font-family:var(--mono);font-size:.8rem;color:var(--ink);white-space:pre-wrap;display:block}
+.meta{font-family:var(--mono);font-size:.72rem;color:var(--ink-3);padding:.7rem 1.25rem;
+  border-top:1px solid var(--rule);display:flex;gap:1.25rem;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.note{font-size:.85rem;color:var(--ink-3);border-left:2px solid var(--rule-2);padding-left:.85rem;line-height:1.5}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Design prototype &middot; ticket 005</div>
+  <h1>Answer view</h1>
+  <p class="sub">Three states of the same surface. The answer structure is fixed by the citation
+  contract: a silence banner where it applies, a gate-verified citation register, and a visibly
+  separate inference register. Every quote shown here is real text from the 16-document corpus.</p>
+</header>
+
+<div class="legend">
+  <div class="leg"><b style="color:var(--ok)">Cited register</b><span>Quoted, anchored, and machine-verified against the corpus before display.</span></div>
+  <div class="leg"><b style="color:var(--infer)">Inference register</b><span>The agent's reading. Never dressed as a citation. Tinted ground, no quote marks.</span></div>
+  <div class="leg"><b style="color:var(--stop)">Stop states</b><span>Corpus silence, declared above everything &mdash; or the gate withholding an answer.</span></div>
+</div>
+
+<!-- STATE 1 -->
+<section class="state">
+  <div class="state-tag">State 1 &mdash; answered, all citations verified</div>
+  <div class="q"><b>Question</b>Our LC-MS/MS reference standard lot expired mid-run. Do we have to re-run the batch?</div>
+  <div class="ans">
+    <div class="reg cited">
+      <div class="reg-h"><span class="dot"></span>What the regulations say</div>
+      <div class="cite"><span class="tick">&check; verified</span><div>
+        <span class="anchor">LQSS &mdash; Part IV, Reagents, Reference Standards and Media</span>
+        <blockquote>within their expiration or re-qualification dates at the time of use</blockquote></div></div>
+      <div class="cite"><span class="tick">&check; verified</span><div>
+        <span class="anchor">OCM Chemistry Checklist v11 &mdash; row 3 <span style="color:var(--ink-3)">(cites LQSS IV)</span></span>
+        <blockquote>Deteriorated or outdated reagents, reference standards and media must be properly discarded.</blockquote></div></div>
+      <div class="cite"><span class="tick">&check; verified</span><div>
+        <span class="anchor">9 NYCRR Part 130 &mdash; &sect; 130.22(a)</span>
+        <blockquote>shall be conducted by a cannabis laboratory employing methods approved by the Office</blockquote></div></div>
+    </div>
+    <div class="reg infer">
+      <div class="reg-h"><span class="dot"></span>My reading &mdash; inference, not cited</div>
+      <p>LQSS Part IV fixes the test at <em>time of use</em>, not time of batch start. Analyses run
+      after the expiry timestamp therefore sit outside it; analyses completed before it do not.</p>
+      <p>OCM does not address mid-run expiry anywhere in the corpus. The conservative reading is to
+      re-run only the affected injections, not the whole batch &mdash; but that is my inference from
+      the &ldquo;time of use&rdquo; wording, not a rule OCM states.</p>
+    </div>
+    <div class="meta"><span>3 citations &middot; 3 verified &middot; 0 failed</span><span>gate passed on attempt 1</span><span>claude-sonnet-5</span></div>
+  </div>
+</section>
+
+<!-- STATE 2 -->
+<section class="state">
+  <div class="state-tag">State 2 &mdash; corpus silent, declared before any reasoning</div>
+  <div class="q"><b>Question</b>How long must we retain instrument audit-trail exports specifically?</div>
+  <div class="ans">
+    <div class="banner"><span class="mark">&empty;</span><div>
+      <b>OCM does not address this</b>
+      <span>No document in the corpus states a retention period for instrument audit-trail exports as such.</span></div></div>
+    <div class="reg cited">
+      <div class="reg-h"><span class="dot"></span>Nearest requirements &mdash; adjacent, not governing</div>
+      <div class="cite"><span class="tick">&check; verified</span><div>
+        <span class="anchor">9 NYCRR Part 130 &mdash; &sect; 130.26 Record Retention</span>
+        <blockquote>&sect; 130.26 Record Retention.</blockquote></div></div>
+    </div>
+    <div class="reg infer">
+      <div class="reg-h"><span class="dot"></span>My reading &mdash; inference, not cited</div>
+      <p>&sect; 130.26 governs records generally and does not enumerate audit-trail exports. Whether
+      they fall inside it is a reading, not a rule. This is a gap in OCM guidance, not a permission.</p>
+    </div>
+    <div class="meta"><span>1 citation &middot; 1 verified</span><span>silence declared</span><span>claude-sonnet-5</span></div>
+  </div>
+</section>
+
+<!-- STATE 3 -->
+<section class="state">
+  <div class="state-tag">State 3 &mdash; gate withheld the answer</div>
+  <div class="q"><b>Question</b>What is the action limit for total yeast and mould in inhalable flower?</div>
+  <div class="ans">
+    <div class="reg blocked">
+      <div class="reg-h"><span class="dot"></span>Answer withheld &mdash; citation could not be verified</div>
+      <p style="margin:0;font-size:.95rem;color:var(--ink)">One of four quoted passages was not found
+      in the corpus after 3 attempts. The answer was not shown.</p>
+      <div class="fail"><span class="lbl">Unverified quote &mdash; no match in corpus</span>
+        <code>"Total yeast and mould shall not exceed 10,000 CFU/g in
+inhalable cannabis flower."</code></div>
+      <div class="fail"><span class="lbl">Claimed anchor</span>
+        <code>ocm-testing-limits-2-9-26 &mdash; Table 3</code></div>
+      <p class="note" style="margin-top:1rem">This is the failure mode the gate exists for. The quote
+      is plausible, the anchor is plausible, and the passage does not exist. Without the gate this
+      would have been indistinguishable from State&nbsp;1.</p>
+    </div>
+    <div class="meta"><span>4 citations &middot; 3 verified &middot; <span style="color:var(--stop)">1 failed</span></span><span>attempts 3 / 3</span><span>answer suppressed</span></div>
+  </div>
+</section>
+
+<p class="note">Open questions this prototype exists to settle: whether verification status is shown
+per citation or summarised once; whether the inference register is collapsed by default; whether the
+answer streams or arrives complete; and how you get from an anchor to the passage in the source PDF.</p>
+</div>

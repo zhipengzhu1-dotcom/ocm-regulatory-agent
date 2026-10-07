@@ -1,0 +1,12 @@
+[
+  {
+    "id": "authored:mid-run-expiry",
+    "question": "Our LC-MS/MS reference standard lot expired part-way through a run. Does OCM require us to re-run the batch?",
+    "expect": { "documentId": "laboratory-quality-system-standards-2-9-26" }
+  },
+  {
+    "id": "authored:audit-trail-retention",
+    "question": "How long must we retain instrument audit-trail exports specifically?",
+    "expect": { "silent": true }
+  }
+]
