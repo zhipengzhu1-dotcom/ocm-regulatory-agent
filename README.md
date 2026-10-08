@@ -18,6 +18,12 @@ from general knowledge.
 It is a single-user tool that runs on `127.0.0.1`. It is not legal advice, and it does not
 replace reading the regulation.
 
+![The Regulatory Assistant answering "How often must a cannabis laboratory have a regulatory audit, and what does it need to do with the results?" Three quotations from § 130.10 of Part 130, each marked verified with its page number, appear under "What the regulations say". The model's interpretation appears below them under "My reading — inference, not cited". The footer reads "3 citation(s) · all verified, gate passed on attempt 1".](docs/screenshots/regulatory-audit-answer-with-verified-citations.png)
+
+The screenshot shows one answer. The three quotations under "What the regulations say" passed
+the gate on the first attempt. The paragraph under "My reading" is not checked. The red banner
+at the top is the Suite B integrity failure described in Known issues.
+
 ## Why it verifies quotations and re-prompts
 
 A wrong answer about a regulation that looks right is the failure that matters most. A
